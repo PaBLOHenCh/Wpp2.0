@@ -15,6 +15,7 @@ def handle_enviar_mensagem(data):
     Adiciona status "Enviada".
     """
     destino = data["destino"]
+    origem = data["origem"]
 
     # Criando estrutura de mensagens pendentes para cada destinatário
     if destino not in mensagens_pendentes:
@@ -25,11 +26,15 @@ def handle_enviar_mensagem(data):
         "origem": data["origem"],
         "texto": data["texto"],
         "status": "Enviada",  # Status inicial
-        "sids_origem": request.sid 
+        "sids_origem": request.sid,
+        "id_msg" : data["id_msg"]
     }
 
     mensagens_pendentes[destino].append(mensagem)
     print(f"💬 Mensagem armazenada para {destino}: {mensagem}")
+
+    #Emite um evento para o cliente que esse servidor recebeu a mensagem
+    emit("ack_recebido", {"origem": origem, "destino": destino, "id_msg": data["id_msg"]})
 
     # Informa ao remetente que a mensagem foi enviada
     emit("status_mensagem", {"destino": destino, "status": "Enviada"}, room=request.sid)
@@ -63,3 +68,11 @@ def handle_mensagem_lida(data):
     """
     emit("status_mensagem", {"origem": data["origem"], "status": "Lida"}, room=request.sid)
     print(f"👀 Mensagem de {data['origem']} marcada como Lida.")
+
+@socketio.on("ack_entregue")
+def handle_ack_entregue(data):
+    origem = data["origem"]
+    destino = data["destino"]
+
+    # Confirma que a mensagem foi entregue
+    socketio.emit("ack_entregue", {"origem": origem, "destino": destino}, to=origem)

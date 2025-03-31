@@ -1,5 +1,6 @@
 import socketio
 import socket
+import time
 
 # Obtém o IP da máquina local automaticamente
 def get_local_ip():
@@ -12,6 +13,7 @@ def get_local_ip():
 
 sio = socketio.Client()
 meu_ip = get_local_ip()
+mensagens_pendentes = {}
 
 @sio.event
 def connect():
@@ -42,9 +44,29 @@ def verificar_novas_mensagens():
 def enviar_mensagem(destinatario, mensagem):
     
     #envia uma mensagem para um IP específico e exibe status.
+    msg_id = f"{meu_ip}-{int(time.time())}"
+    mensagens_pendentes[msg_id] = (mensagem, destinatario)
+
+    tentar_enviar_msg(mensagem, msg_id, destinatario)
     
-    sio.emit("enviar_mensagem", {"origem": meu_ip, "destino": destinatario, "texto": mensagem})
+
+def tentar_enviar_msg(destinatario, mensagem, msg_id, tentativas=0, max_tentativas=5):
+    
+    while tentativas >= max_tentativas:
+        sio.emit("enviar_mensagem", {"origem": meu_ip, "destino": destinatario, "texto": mensagem, "id_msg": msg_id})
+        time.sleep(3)
+        if msg_id not in mensagens_pendentes:
+            break
+        print(f"❌ Falha ao enviar mensagem para {destinatario} após {tentativas} tentativas.")
+        print("\nEnviando novamente\n")
+    
+    return
+
+@sio.on("ack_recebido")
+def confirmar_envio(data):
+    del mensagens_pendentes[data["id_msg"]]
     print("📤 Mensagem enviada!")
+
 
 def marcar_como_lida(origem):
     """
