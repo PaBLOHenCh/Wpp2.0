@@ -74,7 +74,7 @@ def marcar_como_lida(origem):
     """
     sio.emit("mensagem_lida", {"origem": origem})
 
-sio.connect("http://IP_DO_SERVIDOR:5000")  # Substitua pelo IP do servidor
+sio.connect("http://127.0.0.1:5000")  # Substitua pelo IP do servidor
 
 while True:
     opcao = input("\n1. Verificar mensagens\n2. Enviar mensagem\nEscolha: ")

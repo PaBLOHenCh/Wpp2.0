@@ -76,3 +76,9 @@ def handle_ack_entregue(data):
 
     # Confirma que a mensagem foi entregue
     socketio.emit("ack_entregue", {"origem": origem, "destino": destino}, to=origem)
+
+if __name__ == "__main__":
+    from gevent import pywsgi
+    server = pywsgi.WSGIServer(("0.0.0.0", 5000), app)
+    print("🚀 Servidor rodando em 0.0.0.0:5000")
+    server.serve_forever()
