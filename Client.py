@@ -27,7 +27,7 @@ def receber_mensagem(data):
     print(f"\n📩 Nova mensagem de {data['origem']}: {data['texto']} (Status: {data['status']})")
 
     # Após receber, informa ao servidor que a mensagem foi lida
-    marcar_como_lida(data["origem"])
+    marcar_como_lida(data)
 
 @sio.on("status_mensagem")
 def atualizar_status_mensagem(data):
@@ -35,6 +35,7 @@ def atualizar_status_mensagem(data):
     Atualiza o status das mensagens enviadas.
     """
     print(f"📢 Status da mensagem para {data['destino']}: {data['status']}")
+    
 
 def verificar_novas_mensagens():
 
@@ -47,12 +48,12 @@ def enviar_mensagem(destinatario, mensagem):
     msg_id = f"{meu_ip}-{int(time.time())}"
     mensagens_pendentes[msg_id] = (mensagem, destinatario)
 
-    tentar_enviar_msg(mensagem, msg_id, destinatario)
+    tentar_enviar_msg(destinatario, mensagem, msg_id)
     
 
 def tentar_enviar_msg(destinatario, mensagem, msg_id, tentativas=0, max_tentativas=5):
     
-    while tentativas >= max_tentativas:
+    while tentativas <= max_tentativas:
         sio.emit("enviar_mensagem", {"origem": meu_ip, "destino": destinatario, "texto": mensagem, "id_msg": msg_id})
         time.sleep(3)
         if msg_id not in mensagens_pendentes:
@@ -68,13 +69,13 @@ def confirmar_envio(data):
     print("📤 Mensagem enviada!")
 
 
-def marcar_como_lida(origem):
+def marcar_como_lida(msg):
     """
     Informa ao servidor que a mensagem de 'origem' foi lida.
     """
-    sio.emit("mensagem_lida", {"origem": origem})
+    sio.emit("mensagem_lida", msg)
 
-sio.connect("http://127.0.0.1:5000")  # Substitua pelo IP do servidor
+sio.connect("http://192.168.0.125:5000")  # Substitua pelo IP do servidor
 
 while True:
     opcao = input("\n1. Verificar mensagens\n2. Enviar mensagem\nEscolha: ")
@@ -85,4 +86,4 @@ while True:
     elif opcao == "2":
         destino = input("Digite o IP do destinatário: ")
         texto = input("Digite sua mensagem: ")
-        enviar_mensagem(destino, texto)
+        enviar_mensagem(destino, texto, )

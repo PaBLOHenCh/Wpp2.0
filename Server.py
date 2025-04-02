@@ -27,7 +27,8 @@ def handle_enviar_mensagem(data):
         "texto": data["texto"],
         "status": "Enviada",  # Status inicial
         "sids_origem": request.sid,
-        "id_msg" : data["id_msg"]
+        "id_msg" : data["id_msg"],
+        "destino" : data["destino"]
     }
 
     mensagens_pendentes[destino].append(mensagem)
@@ -66,7 +67,7 @@ def handle_mensagem_lida(data):
     """
     Marca uma mensagem como "Lida".
     """
-    emit("status_mensagem", {"origem": data["origem"], "status": "Lida"}, room=request.sid)
+    emit("status_mensagem", {"origem": data["origem"], "status": "Lida", "destino": data["destino"]}, room=request.sid)
     print(f"👀 Mensagem de {data['origem']} marcada como Lida.")
 
 @socketio.on("ack_entregue")
