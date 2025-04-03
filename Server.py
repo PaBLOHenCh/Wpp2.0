@@ -1,10 +1,18 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 from flask import request  # Para pegar detalhes da requisição
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+    
 # Simulação de banco de dados: mensagens pendentes + status de entrega
 mensagens_pendentes = {}
 

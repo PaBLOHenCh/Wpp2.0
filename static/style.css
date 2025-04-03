@@ -1,0 +1,67 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #6ec1d1;
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+}
+
+#chat-container {
+    width: 500px;
+    background: #34729c;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#chat-box {
+    height: 300px;
+    overflow-y: auto;
+    background-color: #1e5470;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+#msg-input {
+    width: 60%;
+    padding: 10px;
+}
+
+button {
+    padding: 10px;
+    background: #1e5470;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.input-arquivo {
+    position: absolute;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    z-index: -1;
+  }
+  
+  .botao-upload {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff; /* Cor de exemplo */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .botao-upload:hover {
+    background-color: #0056b3; /* Cor de hover de exemplo */
+  }
+  
+  /* Estilos adicionais para o container, se necessário */
+  .container-upload {
+    position: relative; /* Necessário para o posicionamento absoluto do input */
+    display: inline-block;
+  }
+
