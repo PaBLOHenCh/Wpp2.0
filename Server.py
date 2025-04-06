@@ -8,11 +8,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 @app.route('/')
 def index():
     return render_template('index.html')
-
-if __name__ == "__main__":
-    app.run(debug=True)
-
-    
+   
 # Simulação de banco de dados: mensagens pendentes + status de entrega
 mensagens_pendentes = {}
 
@@ -22,6 +18,12 @@ def handle_enviar_mensagem(data):
     Recebe uma mensagem e armazena caso o destinatário não esteja online.
     Adiciona status "Enviada".
     """
+
+    required_fields = ['origem', 'destino', 'texto', 'id_msg']
+    for field in required_fields:
+        if field not in data:
+            raise ValueError(f"Campo obrigatório faltando: {field}" )
+
     destino = data["destino"]
     origem = data["origem"]
 
@@ -89,5 +91,5 @@ def handle_ack_entregue(data):
 if __name__ == "__main__":
     from gevent import pywsgi
     server = pywsgi.WSGIServer(("0.0.0.0", 5000), app)
-    print("🚀 Servidor rodando em 0.0.0.0:5000")
+    print("🚀 Servidor rodando em http://192.168.1.16:5000") #IP do Servidor
     server.serve_forever()

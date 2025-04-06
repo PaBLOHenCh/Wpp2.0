@@ -75,7 +75,7 @@ def marcar_como_lida(msg):
     """
     sio.emit("mensagem_lida", msg)
 
-sio.connect("http://192.168.0.125:5000")  # Substitua pelo IP do servidor
+sio.connect("http://192.168.1.16:5000")  # Substitua pelo IP do servidor
 
 while True:
     opcao = input("\n1. Verificar mensagens\n2. Enviar mensagem\nEscolha: ")
