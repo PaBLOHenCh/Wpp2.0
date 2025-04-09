@@ -11,6 +11,7 @@ def index():
    
 # Simulação de banco de dados: mensagens pendentes + status de entrega
 mensagens_pendentes = {}
+clientes_conectados = {}
 
 @socketio.on("enviar_mensagem")
 def handle_enviar_mensagem(data):
@@ -50,6 +51,8 @@ def handle_enviar_mensagem(data):
     # Informa ao remetente que a mensagem foi enviada
     emit("status_mensagem", {"destino": destino, "status": "Enviada"}, room=request.sid)
 
+    clientes_conectados[origem]= request.sid
+
 @socketio.on("verificar_mensagens")
 def handle_verificar_mensagens(data):
     """
@@ -77,8 +80,12 @@ def handle_mensagem_lida(data):
     """
     Marca uma mensagem como "Lida".
     """
-    emit("status_mensagem", {"origem": data["origem"], "status": "Lida", "destino": data["destino"]}, room=request.sid)
-    print(f"👀 Mensagem de {data['origem']} marcada como Lida.")
+    sid_origem = clientes_conectados.get(data["origem"])
+    if sid_origem:
+        emit("status_mensagem", {"origem": data["origem"], "status": "Lida", "destino": data["destino"]}, room=sid_origem)
+        print(f"👀 Mensagem de {data['origem']} marcada como Lida.")
+    else:
+        print("Não foi possível avisar à origem que a mensagem foi lida")
 
 @socketio.on("ack_entregue")
 def handle_ack_entregue(data):
