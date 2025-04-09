@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp 2.0</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    
+    <div id="chat-container">
+        <h2>WhatsApp 2.0</h2>
+        <div id="chat-box">
+            <div class="messages" id="messages-container">
+                <!-- As mensagens serão inseridas aqui -->
+            </div>
+        </div>
+        <div class="alinhar">
+            <input type="text" id="msg-input" placeholder="Digite a sua mensagem...">
+
+            <button onclick="sendMessage()">&#10148;</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
